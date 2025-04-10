@@ -1,236 +1,341 @@
-<div id="app-container"></div>
-<div id="controls"></div>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cardápio Aurora</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+    }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    #controls {
+      width: 100%;
+      background: #111;
+      padding: 2rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-<style>
-  body {
-    margin: 0;
-    font-family: sans-serif;
-    background: #111;
-    color: #fff;
-  }
-  #app-container {
-    position: relative;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  #app-container img {
-    width: 100%;
-    display: block;
-  }
-  #app {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-  #controls {
-    padding: 2rem;
-  }
+    #controls input,
+    #controls button {
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      margin: 0.4rem;
+    }
 
-  .prato {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-size: 54.5px;
-    font-family: 'Playfair Display', serif;
-    font-weight: bold;
-    color: #000;
-    z-index: 10;
-    white-space: nowrap;
-  }
+    #controls ul {
+      list-style: none;
+      padding-left: 0;
+    }
 
-  #current-day {
-    position: absolute;
-    top: 11.5%;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 66.4px;
-    font-weight: bold;
-    color: #000;
-    z-index: 10;
-  }
+    #controls li {
+      margin: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #222;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 1.2rem;
+    }
 
-  @media (max-width: 600px) {
+    .botoes {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .botoes button {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.9rem;
+    }
+
+    #controls button {
+      cursor: pointer;
+      background: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #controls button:hover {
+      background: #666;
+    }
+
+    #day-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    #day-buttons button {
+      font-size: 1.1rem;
+      padding: 0.6rem 1.2rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #day-buttons button:hover {
+      background: #555;
+    }
+
+    #app-container {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    #app-container img {
+      width: 100%;
+      display: block;
+    }
+
+    #app {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
     #current-day {
-      font-size: 24px !important;
+      position: absolute;
+      top: 11.5%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 66.4px;
+      font-weight: bold;
+      color: #000;
+      z-index: 10;
     }
+
     .prato {
-      font-size: 24px !important;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 54.5px;
+      font-family: 'Playfair Display', serif;
+      font-weight: bold;
+      color: #000;
+      z-index: 10;
+      white-space: nowrap;
     }
-  }
-</style>
 
-<script>
-window.onload = function () {
-  const container = document.getElementById("app-container");
+    @media (max-width: 600px) {
+      #current-day {
+        font-size: 24px !important;
+      }
 
-  const bg = document.createElement("img");
-  bg.src = "https://raw.githubusercontent.com/espectrorelic/Card-pio-Aurora/ae2ab74799281094c56a56af50f974f08df39ac1/cardapio-pizza.png";
-  bg.crossOrigin = "anonymous";
-  container.appendChild(bg);
+      .prato {
+        font-size: 24px !important;
+      }
 
-  const app = document.createElement("div");
-  app.id = "app";
-  container.appendChild(app);
+      #controls {
+        padding: 1rem;
+        font-size: 1rem;
+      }
 
-  const diaEl = document.createElement("h1");
-  diaEl.id = "current-day";
-  diaEl.innerText = "Segunda-feira";
-  app.appendChild(diaEl);
-
-  const posicoes = [
-  "21%", "27.5%", "34%", "40.5%", "47%",
-  "53.5%", "60%", "66.5%", "73%", "79.5%", "86%"
-];
-const campos = [];
-for (let i = 0; i < 11; i++) {
-  const campo = document.createElement("div");
-  campo.className = "prato";
-  campo.id = `campo${i + 1}`;
-  campo.style.top = posicoes[i];
-  campos.push(campo);
-  app.appendChild(campo);
-}
-
-  const controls = document.getElementById("controls");
-  controls.innerHTML = `
-    <h2>Montagem do Cardápio</h2>
-    <div id="day-buttons"></div>
-    <input type="text" id="new-dish-input" placeholder="Novo prato...">
-    <button id="add-dish-btn">➕ Adicionar</button>
-    <ul id="dish-list"></ul>
-    <h3>Pratos Selecionados (max 11)</h3>
-    <ul id="selected-list"></ul>
-    <button id="export-btn">📸 Exportar como JPEG</button>
-  `;
-
-  let baseDePratos = [
-    "Arroz branco", "Feijão", "Frango", "Panqueca", "Batata assada",
-    "Salada tropical", "Farofa", "Purê", "Bife acebolado", "Macarrão", "Salada verde"
-  ];
-  let cardapioPorDia = {
-    "Segunda": [], "Terça": [], "Quarta": [], "Quinta": [], "Sexta": [], "Sábado": [], "Domingo": []
-  };
-  let diaAtual = "Segunda";
-  const maxPratos = 11;
-
-  function preencherCampos() {
-    diaEl.innerText = diaAtual === "Sábado" || diaAtual === "Domingo" ? diaAtual : `${diaAtual}-feira`;
-    const pratos = cardapioPorDia[diaAtual];
-    campos.forEach((c, i) => c.innerText = pratos[i] || "");
-  }
-
-  function renderListaPratos() {
-    const ul = document.getElementById("dish-list");
-    ul.innerHTML = "";
-    baseDePratos.forEach((prato, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span>${prato}</span>
-        <button onclick="adicionarAoCardapio('${prato}')">➕</button>
-        <button onclick="removerPrato(${i})">🗑️</button>`;
-      ul.appendChild(li);
-    });
-  }
-
-  function renderSelecionados() {
-    const ul = document.getElementById("selected-list");
-    ul.innerHTML = "";
-    cardapioPorDia[diaAtual].forEach((prato, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span>${prato}</span>
-        <button onclick="mover(${i}, -1)">↑</button>
-        <button onclick="mover(${i}, 1)">↓</button>
-        <button onclick="removerDoCardapio(${i})">❌</button>`;
-      ul.appendChild(li);
-    });
-  }
-
-  window.adicionarAoCardapio = function (prato) {
-    const lista = cardapioPorDia[diaAtual];
-    if (lista.length < maxPratos && !lista.includes(prato)) {
-      lista.push(prato);
-      preencherCampos();
-      renderSelecionados();
+      #controls input,
+      #controls button {
+        font-size: 0.95rem;
+        padding: 0.4rem 0.8rem;
+      }
     }
-  }
+  </style>
+</head>
+<body>
 
-  window.removerPrato = function (i) {
-    baseDePratos.splice(i, 1);
-    renderListaPratos();
-  }
+  <div id="controls"></div>
+  <div id="app-container"></div>
 
-  window.removerDoCardapio = function (i) {
-    cardapioPorDia[diaAtual].splice(i, 1);
-    preencherCampos();
-    renderSelecionados();
-  }
+  <script>
+    window.onload = function () {
+      const container = document.getElementById("app-container");
 
-  window.mover = function (i, dir) {
-    const lista = cardapioPorDia[diaAtual];
-    const j = i + dir;
-    if (j >= 0 && j < lista.length) {
-      [lista[i], lista[j]] = [lista[j], lista[i]];
-      preencherCampos();
-      renderSelecionados();
-    }
-  }
+      const bg = document.createElement("img");
+      bg.src = "https://raw.githubusercontent.com/espectrorelic/Card-pio-Aurora/ae2ab74799281094c56a56af50f974f08df39ac1/cardapio-pizza.png";
+      bg.crossOrigin = "anonymous";
+      container.appendChild(bg);
 
-  function criarBotoesDias() {
-    const container = document.getElementById("day-buttons");
-    container.innerHTML = "";
-    Object.keys(cardapioPorDia).forEach(dia => {
-      const btn = document.createElement("button");
-      const texto = dia === "Sábado" || dia === "Domingo" ? dia : `${dia}-feira`;
-      btn.innerText = texto.slice(0, 3);
-      btn.onclick = () => {
-        diaAtual = dia;
+      const app = document.createElement("div");
+      app.id = "app";
+      container.appendChild(app);
+
+      const diaEl = document.createElement("h1");
+      diaEl.id = "current-day";
+      diaEl.innerText = "Segunda-feira";
+      app.appendChild(diaEl);
+
+      const posicoes = [
+        "21%", "27.5%", "34%", "40.5%", "47%",
+        "53.5%", "60%", "66.5%", "73%", "79.5%", "86%"
+      ];
+      const campos = [];
+      for (let i = 0; i < 11; i++) {
+        const campo = document.createElement("div");
+        campo.className = "prato";
+        campo.id = `campo${i + 1}`;
+        campo.style.top = posicoes[i];
+        campos.push(campo);
+        app.appendChild(campo);
+      }
+
+      const controls = document.getElementById("controls");
+      controls.innerHTML = `
+        <h2>Montagem do Cardápio</h2>
+        <div id="day-buttons"></div>
+        <input type="text" id="new-dish-input" placeholder="Novo prato...">
+        <button id="add-dish-btn">➕ Adicionar</button>
+        <ul id="dish-list"></ul>
+        <h3>Pratos Selecionados (max 11)</h3>
+        <ul id="selected-list"></ul>
+        <button id="export-btn">📸 Exportar como JPEG</button>
+      `;
+
+      let baseDePratos = [
+        "Arroz branco", "Feijão", "Frango", "Panqueca", "Batata assada",
+        "Salada tropical", "Farofa", "Purê", "Bife acebolado", "Macarrão", "Salada verde"
+      ];
+      let cardapioPorDia = {
+        "Segunda": [], "Terça": [], "Quarta": [], "Quinta": [], "Sexta": [], "Sábado": [], "Domingo": []
+      };
+      let diaAtual = "Segunda";
+      const maxPratos = 11;
+
+      function preencherCampos() {
+        diaEl.innerText = diaAtual === "Sábado" || diaAtual === "Domingo" ? diaAtual : `${diaAtual}-feira`;
+        const pratos = cardapioPorDia[diaAtual];
+        campos.forEach((c, i) => c.innerText = pratos[i] || "");
+      }
+
+      function renderListaPratos() {
+        const ul = document.getElementById("dish-list");
+        ul.innerHTML = "";
+        baseDePratos.forEach((prato, i) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span>${prato}</span>
+            <div class="botoes">
+              <button onclick="adicionarAoCardapio('${prato}')">➕</button>
+              <button onclick="removerPrato(${i})">🗑️</button>
+            </div>`;
+          ul.appendChild(li);
+        });
+      }
+
+      function renderSelecionados() {
+        const ul = document.getElementById("selected-list");
+        ul.innerHTML = "";
+        cardapioPorDia[diaAtual].forEach((prato, i) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span>${prato}</span>
+            <div class="botoes">
+              <button onclick="mover(${i}, -1)">↑</button>
+              <button onclick="mover(${i}, 1)">↓</button>
+              <button onclick="removerDoCardapio(${i})">❌</button>
+            </div>`;
+          ul.appendChild(li);
+        });
+      }
+
+      window.adicionarAoCardapio = function (prato) {
+        const lista = cardapioPorDia[diaAtual];
+        if (lista.length < maxPratos && !lista.includes(prato)) {
+          lista.push(prato);
+          preencherCampos();
+          renderSelecionados();
+        }
+      };
+
+      window.removerPrato = function (i) {
+        baseDePratos.splice(i, 1);
+        renderListaPratos();
+      };
+
+      window.removerDoCardapio = function (i) {
+        cardapioPorDia[diaAtual].splice(i, 1);
         preencherCampos();
         renderSelecionados();
       };
-      container.appendChild(btn);
-    });
-  }
 
-  function exportar() {
-    html2canvas(document.getElementById("app-container"), {
-      useCORS: true
-    }).then(canvas => {
-      const a = document.createElement("a");
-      a.download = `Cardapio-${diaAtual}.jpeg`;
-      a.href = canvas.toDataURL("image/jpeg");
-      a.click();
-    });
-  }
+      window.mover = function (i, dir) {
+        const lista = cardapioPorDia[diaAtual];
+        const j = i + dir;
+        if (j >= 0 && j < lista.length) {
+          [lista[i], lista[j]] = [lista[j], lista[i]];
+          preencherCampos();
+          renderSelecionados();
+        }
+      };
 
-  document.getElementById("add-dish-btn").onclick = () => {
-    const input = document.getElementById("new-dish-input");
-    const val = input.value.trim();
-    if (val && !baseDePratos.includes(val)) {
-      baseDePratos.push(val);
-      input.value = "";
+      function criarBotoesDias() {
+        const container = document.getElementById("day-buttons");
+        container.innerHTML = "";
+        Object.keys(cardapioPorDia).forEach(dia => {
+          const btn = document.createElement("button");
+          const texto = dia === "Sábado" || dia === "Domingo" ? dia : `${dia}-feira`;
+          btn.innerText = texto.slice(0, 3);
+          btn.onclick = () => {
+            diaAtual = dia;
+            preencherCampos();
+            renderSelecionados();
+          };
+          container.appendChild(btn);
+        });
+      }
+
+      function exportar() {
+        html2canvas(document.getElementById("app-container"), {
+          useCORS: true
+        }).then(canvas => {
+          const a = document.createElement("a");
+          a.download = `Cardapio-${diaAtual}.jpeg`;
+          a.href = canvas.toDataURL("image/jpeg");
+          a.click();
+        });
+      }
+
+      document.getElementById("add-dish-btn").onclick = () => {
+        const input = document.getElementById("new-dish-input");
+        const val = input.value.trim();
+        if (val && !baseDePratos.includes(val)) {
+          baseDePratos.push(val);
+          input.value = "";
+          renderListaPratos();
+        }
+      };
+
+      document.getElementById("export-btn").onclick = () => {
+        if (document.querySelector("#app-container img")?.complete) {
+          exportar();
+        } else {
+          alert("A imagem ainda não carregou completamente.");
+        }
+      };
+
+      criarBotoesDias();
       renderListaPratos();
-    }
-  };
+      preencherCampos();
+      renderSelecionados();
+    };
+  </script>
+</body>
+</html>
 
-  document.getElementById("export-btn").onclick = () => {
-    if (document.querySelector("#app-container img")?.complete) {
-      exportar();
-    } else {
-      alert("A imagem ainda não carregou completamente.");
-    }
-  };
-
-  criarBotoesDias();
-  renderListaPratos();
-  preencherCampos();
-  renderSelecionados();
-};
-</script>
