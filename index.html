@@ -1,4 +1,3 @@
-<!-- CÓDIGO COMPLETO ATUALIZADO -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -46,11 +45,6 @@
       padding: 0.5rem 1rem;
       border-radius: 8px;
       font-size: 1.2rem;
-      cursor: grab;
-    }
-
-    #controls li:active {
-      cursor: grabbing;
     }
 
     .botoes {
@@ -62,6 +56,18 @@
     .botoes button {
       padding: 0.3rem 0.6rem;
       font-size: 0.9rem;
+    }
+
+    .drag-btn {
+      cursor: grab;
+      font-size: 1.2rem;
+      background: transparent;
+      border: none;
+      color: white;
+    }
+
+    .drag-btn:active {
+      cursor: grabbing;
     }
 
     .adicionado {
@@ -187,7 +193,7 @@
 
       const posicoes = [
         "21%", "27.5%", "34%", "40.5%", "47%",
-        "53.5%", "60%", "66.5%", "73%", "79.5%", "86%"
+        "53.5%", "60%", "66.9%", "73%", "79.5%", "86%"
       ];
       const campos = [];
       for (let i = 0; i < 11; i++) {
@@ -231,10 +237,7 @@
         const pratos = cardapioPorDia[diaAtual];
         campos.forEach((c, i) => c.innerText = pratos[i] || "");
 
-        // Remover indicadores anteriores
         document.querySelectorAll(".adicionado").forEach(el => el.remove());
-
-        // Adicionar novo indicador de posição
         pratos.forEach((prato, idx) => {
           const item = [...document.querySelectorAll("#dish-list li")].find(li => li.innerText.includes(prato));
           if (item && item.querySelector(".botoes")) {
@@ -258,6 +261,7 @@
             <div class="botoes">
               <button onclick="adicionarAoCardapio('${prato}')">➕</button>
               <button onclick="removerPrato(${i})">🗑️</button>
+              <button class="drag-btn" title="Arrastar">☰</button>
             </div>`;
           ul.appendChild(li);
         });
@@ -270,16 +274,18 @@
         let dragSrcIndex = null;
 
         list.querySelectorAll("li").forEach((item, index) => {
+          const dragBtn = item.querySelector(".drag-btn");
+          dragBtn.addEventListener("mousedown", () => {
+            item.setAttribute("draggable", true);
+          });
           item.addEventListener("dragstart", e => {
             dragSrcIndex = index;
             e.dataTransfer.effectAllowed = "move";
           });
-
           item.addEventListener("dragover", e => {
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";
           });
-
           item.addEventListener("drop", e => {
             e.preventDefault();
             const dragDstIndex = index;
@@ -302,6 +308,8 @@
             <span>${prato}</span>
             <div class="botoes">
               <button onclick="removerDoCardapio(${i})">❌</button>
+              <button class="drag-btn" title="Arrastar">☰</button>
+              <span class="adicionado">${i + 1}/11</span>
             </div>`;
           ul.appendChild(li);
         });
@@ -313,16 +321,18 @@
         let dragSrcIndex = null;
 
         list.querySelectorAll("li").forEach((item, index) => {
+          const dragBtn = item.querySelector(".drag-btn");
+          dragBtn.addEventListener("mousedown", () => {
+            item.setAttribute("draggable", true);
+          });
           item.addEventListener("dragstart", e => {
             dragSrcIndex = index;
             e.dataTransfer.effectAllowed = "move";
           });
-
           item.addEventListener("dragover", e => {
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";
           });
-
           item.addEventListener("drop", e => {
             e.preventDefault();
             const dragDstIndex = index;
