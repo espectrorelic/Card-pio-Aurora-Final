@@ -1,3 +1,4 @@
+<!-- CÓDIGO COMPLETO ATUALIZADO -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -45,11 +46,17 @@
       padding: 0.5rem 1rem;
       border-radius: 8px;
       font-size: 1.2rem;
+      cursor: grab;
+    }
+
+    #controls li:active {
+      cursor: grabbing;
     }
 
     .botoes {
       display: flex;
       gap: 0.4rem;
+      align-items: center;
     }
 
     .botoes button {
@@ -57,16 +64,13 @@
       font-size: 0.9rem;
     }
 
-    #controls button {
-      cursor: pointer;
-      background: #444;
+    .adicionado {
+      background: #28a745;
       color: white;
-      border: none;
-      border-radius: 5px;
-    }
-
-    #controls button:hover {
-      background: #666;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-left: 0.3rem;
     }
 
     #day-buttons {
@@ -207,7 +211,6 @@
         <button id="export-btn">📸 Exportar como JPEG</button>
       `;
 
-      // Carregamento inicial do localStorage
       let baseDePratos = JSON.parse(localStorage.getItem("baseDePratos")) || [
         "Arroz branco", "Feijão", "Frango", "Panqueca", "Batata assada",
         "Salada tropical", "Farofa", "Purê", "Bife acebolado", "Macarrão", "Salada verde"
@@ -227,6 +230,20 @@
         diaEl.innerText = diaAtual === "Sábado" || diaAtual === "Domingo" ? diaAtual : `${diaAtual}-feira`;
         const pratos = cardapioPorDia[diaAtual];
         campos.forEach((c, i) => c.innerText = pratos[i] || "");
+
+        // Remover indicadores anteriores
+        document.querySelectorAll(".adicionado").forEach(el => el.remove());
+
+        // Adicionar novo indicador de posição
+        pratos.forEach((prato, idx) => {
+          const item = [...document.querySelectorAll("#dish-list li")].find(li => li.innerText.includes(prato));
+          if (item && item.querySelector(".botoes")) {
+            const span = document.createElement("span");
+            span.className = "adicionado";
+            span.innerText = `${idx + 1}/11`;
+            item.querySelector(".botoes").appendChild(span);
+          }
+        });
       }
 
       function renderListaPratos() {
@@ -234,15 +251,43 @@
         ul.innerHTML = "";
         baseDePratos.forEach((prato, i) => {
           const li = document.createElement("li");
+          li.setAttribute("draggable", true);
+          li.dataset.index = i;
           li.innerHTML = `
             <span>${prato}</span>
             <div class="botoes">
               <button onclick="adicionarAoCardapio('${prato}')">➕</button>
-              <button onclick="moverNaLista('${prato}', -1)">↑</button>
-              <button onclick="moverNaLista('${prato}', 1)">↓</button>
               <button onclick="removerPrato(${i})">🗑️</button>
             </div>`;
           ul.appendChild(li);
+        });
+        enableDragAndDropBase();
+        preencherCampos();
+      }
+
+      function enableDragAndDropBase() {
+        const list = document.getElementById("dish-list");
+        let dragSrcIndex = null;
+
+        list.querySelectorAll("li").forEach((item, index) => {
+          item.addEventListener("dragstart", e => {
+            dragSrcIndex = index;
+            e.dataTransfer.effectAllowed = "move";
+          });
+
+          item.addEventListener("dragover", e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+          });
+
+          item.addEventListener("drop", e => {
+            e.preventDefault();
+            const dragDstIndex = index;
+            const [moved] = baseDePratos.splice(dragSrcIndex, 1);
+            baseDePratos.splice(dragDstIndex, 0, moved);
+            renderListaPratos();
+            salvarDados();
+          });
         });
       }
 
@@ -251,14 +296,42 @@
         ul.innerHTML = "";
         cardapioPorDia[diaAtual].forEach((prato, i) => {
           const li = document.createElement("li");
+          li.setAttribute("draggable", true);
+          li.dataset.index = i;
           li.innerHTML = `
             <span>${prato}</span>
             <div class="botoes">
-              <button onclick="mover(${i}, -1)">↑</button>
-              <button onclick="mover(${i}, 1)">↓</button>
               <button onclick="removerDoCardapio(${i})">❌</button>
             </div>`;
           ul.appendChild(li);
+        });
+        enableDragAndDropSelecionados();
+      }
+
+      function enableDragAndDropSelecionados() {
+        const list = document.getElementById("selected-list");
+        let dragSrcIndex = null;
+
+        list.querySelectorAll("li").forEach((item, index) => {
+          item.addEventListener("dragstart", e => {
+            dragSrcIndex = index;
+            e.dataTransfer.effectAllowed = "move";
+          });
+
+          item.addEventListener("dragover", e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+          });
+
+          item.addEventListener("drop", e => {
+            e.preventDefault();
+            const dragDstIndex = index;
+            const [moved] = cardapioPorDia[diaAtual].splice(dragSrcIndex, 1);
+            cardapioPorDia[diaAtual].splice(dragDstIndex, 0, moved);
+            preencherCampos();
+            renderSelecionados();
+            salvarDados();
+          });
         });
       }
 
@@ -283,27 +356,6 @@
         preencherCampos();
         renderSelecionados();
         salvarDados();
-      };
-
-      window.mover = function (i, dir) {
-        const lista = cardapioPorDia[diaAtual];
-        const j = i + dir;
-        if (j >= 0 && j < lista.length) {
-          [lista[i], lista[j]] = [lista[j], lista[i]];
-          preencherCampos();
-          renderSelecionados();
-          salvarDados();
-        }
-      };
-
-      window.moverNaLista = function (prato, dir) {
-        const index = baseDePratos.indexOf(prato);
-        const j = index + dir;
-        if (j >= 0 && j < baseDePratos.length) {
-          [baseDePratos[index], baseDePratos[j]] = [baseDePratos[j], baseDePratos[index]];
-          renderListaPratos();
-          salvarDados();
-        }
       };
 
       function criarBotoesDias() {
@@ -360,4 +412,3 @@
   </script>
 </body>
 </html>
-
