@@ -13,7 +13,6 @@
       background: #111;
       color: #fff;
     }
-
     #controls {
       width: 100%;
       background: #111;
@@ -23,19 +22,15 @@
       max-width: 1000px;
       margin: 0 auto;
     }
-
-    #controls input,
-    #controls button {
+    #controls input, #controls button {
       font-size: 1rem;
       padding: 0.5rem 1rem;
       margin: 0.4rem;
     }
-
     #controls ul {
       list-style: none;
       padding-left: 0;
     }
-
     #controls li {
       margin: 0.5rem 0;
       display: flex;
@@ -46,18 +41,15 @@
       border-radius: 8px;
       font-size: 1.2rem;
     }
-
     .botoes {
       display: flex;
       gap: 0.4rem;
       align-items: center;
     }
-
     .botoes button {
       padding: 0.3rem 0.6rem;
       font-size: 0.9rem;
     }
-
     .drag-btn {
       cursor: grab;
       font-size: 1.2rem;
@@ -65,11 +57,9 @@
       border: none;
       color: white;
     }
-
     .drag-btn:active {
       cursor: grabbing;
     }
-
     .adicionado {
       background: #28a745;
       color: white;
@@ -78,14 +68,12 @@
       font-size: 0.75rem;
       margin-left: 0.3rem;
     }
-
     #day-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
       margin-bottom: 1rem;
     }
-
     #day-buttons button {
       font-size: 1.1rem;
       padding: 0.6rem 1.2rem;
@@ -96,22 +84,18 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-
     #day-buttons button:hover {
       background: #555;
     }
-
     #app-container {
       position: relative;
       max-width: 1000px;
       margin: 0 auto;
     }
-
     #app-container img {
       width: 100%;
       display: block;
     }
-
     #app {
       position: absolute;
       top: 0;
@@ -120,7 +104,6 @@
       height: 100%;
       pointer-events: none;
     }
-
     #current-day {
       position: absolute;
       top: 11.5%;
@@ -133,7 +116,6 @@
       color: #000;
       z-index: 10;
     }
-
     .prato {
       position: absolute;
       left: 50%;
@@ -146,23 +128,13 @@
       z-index: 10;
       white-space: nowrap;
     }
-
     @media (max-width: 600px) {
-      #current-day {
-        font-size: 24px !important;
-      }
-
-      .prato {
-        font-size: 24px !important;
-      }
-
+      #current-day, .prato { font-size: 24px !important; }
       #controls {
         padding: 1rem;
         font-size: 1rem;
       }
-
-      #controls input,
-      #controls button {
+      #controls input, #controls button {
         font-size: 0.95rem;
         padding: 0.4rem 0.8rem;
       }
@@ -191,10 +163,7 @@
       diaEl.innerText = "Segunda-feira";
       app.appendChild(diaEl);
 
-      const posicoes = [
-        "21%", "27.5%", "34%", "40.5%", "47%",
-        "53.5%", "60%", "66.9%", "73%", "79.5%", "86%"
-      ];
+      const posicoes = ["21%", "27.5%", "34%", "40.5%", "47%", "53.5%", "60%", "66.9%", "73%", "79.5%", "86%"];
       const campos = [];
       for (let i = 0; i < 11; i++) {
         const campo = document.createElement("div");
@@ -236,7 +205,6 @@
         diaEl.innerText = diaAtual === "Sábado" || diaAtual === "Domingo" ? diaAtual : `${diaAtual}-feira`;
         const pratos = cardapioPorDia[diaAtual];
         campos.forEach((c, i) => c.innerText = pratos[i] || "");
-
         document.querySelectorAll(".adicionado").forEach(el => el.remove());
         pratos.forEach((prato, idx) => {
           const item = [...document.querySelectorAll("#dish-list li")].find(li => li.innerText.includes(prato));
@@ -272,12 +240,16 @@
       function enableDragAndDropBase() {
         const list = document.getElementById("dish-list");
         let dragSrcIndex = null;
-
         list.querySelectorAll("li").forEach((item, index) => {
           const dragBtn = item.querySelector(".drag-btn");
+
+          dragBtn.addEventListener("touchstart", () => {
+            item.setAttribute("draggable", true);
+          });
           dragBtn.addEventListener("mousedown", () => {
             item.setAttribute("draggable", true);
           });
+
           item.addEventListener("dragstart", e => {
             dragSrcIndex = index;
             e.dataTransfer.effectAllowed = "move";
@@ -319,12 +291,16 @@
       function enableDragAndDropSelecionados() {
         const list = document.getElementById("selected-list");
         let dragSrcIndex = null;
-
         list.querySelectorAll("li").forEach((item, index) => {
           const dragBtn = item.querySelector(".drag-btn");
+
+          dragBtn.addEventListener("touchstart", () => {
+            item.setAttribute("draggable", true);
+          });
           dragBtn.addEventListener("mousedown", () => {
             item.setAttribute("draggable", true);
           });
+
           item.addEventListener("dragstart", e => {
             dragSrcIndex = index;
             e.dataTransfer.effectAllowed = "move";
