@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cardápio Aurora</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -160,7 +160,6 @@
   </style>
 </head>
 <body>
-
   <div id="controls"></div>
   <div id="app-container"></div>
 
@@ -208,15 +207,21 @@
         <button id="export-btn">📸 Exportar como JPEG</button>
       `;
 
-      let baseDePratos = [
+      // Carregamento inicial do localStorage
+      let baseDePratos = JSON.parse(localStorage.getItem("baseDePratos")) || [
         "Arroz branco", "Feijão", "Frango", "Panqueca", "Batata assada",
         "Salada tropical", "Farofa", "Purê", "Bife acebolado", "Macarrão", "Salada verde"
       ];
-      let cardapioPorDia = {
+      let cardapioPorDia = JSON.parse(localStorage.getItem("cardapioPorDia")) || {
         "Segunda": [], "Terça": [], "Quarta": [], "Quinta": [], "Sexta": [], "Sábado": [], "Domingo": []
       };
       let diaAtual = "Segunda";
       const maxPratos = 11;
+
+      function salvarDados() {
+        localStorage.setItem("baseDePratos", JSON.stringify(baseDePratos));
+        localStorage.setItem("cardapioPorDia", JSON.stringify(cardapioPorDia));
+      }
 
       function preencherCampos() {
         diaEl.innerText = diaAtual === "Sábado" || diaAtual === "Domingo" ? diaAtual : `${diaAtual}-feira`;
@@ -233,6 +238,8 @@
             <span>${prato}</span>
             <div class="botoes">
               <button onclick="adicionarAoCardapio('${prato}')">➕</button>
+              <button onclick="moverNaLista('${prato}', -1)">↑</button>
+              <button onclick="moverNaLista('${prato}', 1)">↓</button>
               <button onclick="removerPrato(${i})">🗑️</button>
             </div>`;
           ul.appendChild(li);
@@ -261,18 +268,21 @@
           lista.push(prato);
           preencherCampos();
           renderSelecionados();
+          salvarDados();
         }
       };
 
       window.removerPrato = function (i) {
         baseDePratos.splice(i, 1);
         renderListaPratos();
+        salvarDados();
       };
 
       window.removerDoCardapio = function (i) {
         cardapioPorDia[diaAtual].splice(i, 1);
         preencherCampos();
         renderSelecionados();
+        salvarDados();
       };
 
       window.mover = function (i, dir) {
@@ -282,6 +292,17 @@
           [lista[i], lista[j]] = [lista[j], lista[i]];
           preencherCampos();
           renderSelecionados();
+          salvarDados();
+        }
+      };
+
+      window.moverNaLista = function (prato, dir) {
+        const index = baseDePratos.indexOf(prato);
+        const j = index + dir;
+        if (j >= 0 && j < baseDePratos.length) {
+          [baseDePratos[index], baseDePratos[j]] = [baseDePratos[j], baseDePratos[index]];
+          renderListaPratos();
+          salvarDados();
         }
       };
 
@@ -319,6 +340,7 @@
           baseDePratos.push(val);
           input.value = "";
           renderListaPratos();
+          salvarDados();
         }
       };
 
