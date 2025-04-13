@@ -181,7 +181,10 @@
         <input type="text" id="new-dish-input" placeholder="Novo prato...">
         <button id="add-dish-btn">➕ Adicionar</button>
         <ul id="dish-list"></ul>
-        <h3>Pratos Selecionados (max 11)</h3>
+        <h3 style="display: flex; align-items: center; justify-content: space-between;">
+          <span>Pratos Selecionados (max 11)</span>
+          <button id="clear-selected-btn" style="font-size: 0.9rem; padding: 0.3rem 0.6rem;">🧹 Limpar</button>
+        </h3>
         <ul id="selected-list"></ul>
         <button id="export-btn">📸 Exportar como JPEG</button>
       `;
@@ -242,22 +245,10 @@
         let dragSrcIndex = null;
         list.querySelectorAll("li").forEach((item, index) => {
           const dragBtn = item.querySelector(".drag-btn");
-
-          dragBtn.addEventListener("touchstart", () => {
-            item.setAttribute("draggable", true);
-          });
-          dragBtn.addEventListener("mousedown", () => {
-            item.setAttribute("draggable", true);
-          });
-
-          item.addEventListener("dragstart", e => {
-            dragSrcIndex = index;
-            e.dataTransfer.effectAllowed = "move";
-          });
-          item.addEventListener("dragover", e => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-          });
+          dragBtn.addEventListener("touchstart", () => item.setAttribute("draggable", true));
+          dragBtn.addEventListener("mousedown", () => item.setAttribute("draggable", true));
+          item.addEventListener("dragstart", e => { dragSrcIndex = index; e.dataTransfer.effectAllowed = "move"; });
+          item.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; });
           item.addEventListener("drop", e => {
             e.preventDefault();
             const dragDstIndex = index;
@@ -293,22 +284,10 @@
         let dragSrcIndex = null;
         list.querySelectorAll("li").forEach((item, index) => {
           const dragBtn = item.querySelector(".drag-btn");
-
-          dragBtn.addEventListener("touchstart", () => {
-            item.setAttribute("draggable", true);
-          });
-          dragBtn.addEventListener("mousedown", () => {
-            item.setAttribute("draggable", true);
-          });
-
-          item.addEventListener("dragstart", e => {
-            dragSrcIndex = index;
-            e.dataTransfer.effectAllowed = "move";
-          });
-          item.addEventListener("dragover", e => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = "move";
-          });
+          dragBtn.addEventListener("touchstart", () => item.setAttribute("draggable", true));
+          dragBtn.addEventListener("mousedown", () => item.setAttribute("draggable", true));
+          item.addEventListener("dragstart", e => { dragSrcIndex = index; e.dataTransfer.effectAllowed = "move"; });
+          item.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; });
           item.addEventListener("drop", e => {
             e.preventDefault();
             const dragDstIndex = index;
@@ -388,6 +367,14 @@
         } else {
           alert("A imagem ainda não carregou completamente.");
         }
+      };
+
+      // 🔥 ADICIONADO: funcionalidade do botão "🧹 Limpar"
+      document.getElementById("clear-selected-btn").onclick = () => {
+        cardapioPorDia[diaAtual] = [];
+        preencherCampos();
+        renderSelecionados();
+        salvarDados();
       };
 
       criarBotoesDias();
