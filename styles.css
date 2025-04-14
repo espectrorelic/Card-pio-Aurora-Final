@@ -281,7 +281,7 @@ body {
   text-align: center;
   font-family: "Playfair Display", serif;
   font-weight: bold;
-  font-size: clamp(24px, 4vw, 54.5px);
+  font-size: clamp(20px, 4vw, 54.5px);
   color: black;
   white-space: nowrap;
 }
