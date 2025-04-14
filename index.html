@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <div class="container">
     <div class="menu-manager">
@@ -17,60 +19,65 @@
         <div class="sync-status">
           <span id="status-badge" class="badge">Status</span>
           <button id="refresh-btn" class="btn btn-info">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+              <path d="M3 21v-5h5"></path>
+            </svg>
             Atualizar
           </button>
         </div>
       </div>
-      
+
       <div id="day-selector" class="day-selector"></div>
-      
+
       <div class="add-dish">
         <input type="text" id="new-dish" class="input" placeholder="Novo prato...">
         <button id="add-dish-btn" class="btn btn-success">➕ Adicionar</button>
       </div>
-      
+
       <h3 class="section-title">Base de Pratos</h3>
       <div id="error-message" class="error-message hidden"></div>
-      
+
       <div id="dishes-list" class="dishes-list"></div>
-      
+
       <div class="selected-header">
         <h3 class="section-title">Pratos Selecionados (<span id="selected-count">0</span>/11)</h3>
         <button id="clear-menu-btn" class="btn btn-danger">🧹 Limpar</button>
       </div>
-      
+
       <div id="selected-dishes-list" class="dishes-list"></div>
-      
+
       <button id="export-btn" class="btn btn-info export-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+          <circle cx="12" cy="13" r="3"></circle>
+        </svg>
         Exportar como JPEG
       </button>
     </div>
-    
+
     <div id="menu-preview" class="menu-preview">
-      <img 
-        src="https://raw.githubusercontent.com/espectrorelic/Card-pio-Aurora/ae2ab74799281094c56a56af50f974f08df39ac1/cardapio-pizza.png"
-        class="menu-background"
-        crossOrigin="anonymous"
-        alt="Menu background"
-      />
-      
+      <img src="https://raw.githubusercontent.com/espectrorelic/Card-pio-Aurora-Final/504f041d17928c06bff78032f4843c012941d525/Card%C3%A1pio%20de%20Pizza%20Moderno%20Azul%20e%20Dourado%20Documento%20A4%20(1).png
+" class="menu-background" crossOrigin="anonymous" alt="Menu background" />
+
       <div class="menu-content">
         <h1 id="menu-day" class="menu-day"></h1>
         <div id="menu-dishes" class="menu-dishes"></div>
       </div>
     </div>
   </div>
-  
+
   <div id="toast" class="toast hidden">
     <div class="toast-content">
       <h4 id="toast-title" class="toast-title"></h4>
       <p id="toast-message" class="toast-message"></p>
     </div>
   </div>
-  
+
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>
